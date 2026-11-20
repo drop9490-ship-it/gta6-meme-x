@@ -3,7 +3,7 @@
 // That is all it has to do: the post itself is the entry, the house
 // reads it from X. Standard library only, no network, deterministic:
 // the same input bytes always produce the same output bytes.
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -24,4 +24,7 @@ if (source === undefined) {
 
 mkdirSync("/output", { recursive: true });
 copyFileSync(source, "/output/POST.json");
+if (!readFileSync(source).equals(readFileSync("/output/POST.json"))) {
+  throw new Error("POST.json copy verification failed: output bytes differ from source");
+}
 console.log("copied POST.json to /output/POST.json");
